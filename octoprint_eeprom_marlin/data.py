@@ -270,6 +270,40 @@ ALL_DATA_STRUCTURE = {
         "link": "https://marlinfw.org/docs/gcode/M913.html",
         "switches": ["I", "T"],
     },
+    "temperature_units": {
+        "command": "M149",
+        "params": {
+            "C": {"type": "bool", "label": "Celsius"},
+            "F": {"type": "bool", "label": "Fahrenheit"},
+            "K": {"type": "bool", "label": "Kelvin"},
+        },
+        "name": "Temperature Units",
+        "link": "https://marlinfw.org/docs/gcode/M149.html",
+    },
+    "motor_current": {
+        "command": "M907",
+        "params": {
+            "X": {"type": "int", "label": "X motor current", "units": "mA"},
+            "Y": {"type": "int", "label": "Y motor current", "units": "mA"},
+            "Z": {"type": "int", "label": "Z motor current", "units": "mA"},
+            "E": {"type": "int", "label": "E motor current", "units": "mA"},
+            "B": {"type": "int", "label": "Bed motor current", "units": "mA"},
+        },
+        "name": "Motor Current",
+        "link": "https://marlinfw.org/docs/gcode/M907.html",
+    },
+    "backlash": {
+        "command": "M425",
+        "params": {
+            "F": {"type": "float2", "label": "Backlash correction factor"},
+            "S": {"type": "float2", "label": "Backlash smoothing mm"},
+            "X": {"type": "float2", "label": "X backlash distance", "units": "mm"},
+            "Y": {"type": "float2", "label": "Y backlash distance", "units": "mm"},
+            "Z": {"type": "float2", "label": "Z backlash distance", "units": "mm"},
+        },
+        "name": "Backlash Compensation",
+        "link": "https://marlinfw.org/docs/gcode/M425.html",
+    },
    "input_shaping": {
         "command": "M593",
         "params": {

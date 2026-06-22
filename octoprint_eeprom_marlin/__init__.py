@@ -121,6 +121,12 @@ class EEPROMMarlinPlugin(
     def on_api_get(self, request):
         return self._api.on_api_get(request)
 
+    def is_api_adminonly(self):
+        return False
+
+    def is_api_protected(self):
+        return True
+
     # BluePrint handling
     @octoprint.plugin.BlueprintPlugin.route("/download/<name>")
     @Permissions.PLUGIN_EEPROM_MARLIN_READ.require(403)

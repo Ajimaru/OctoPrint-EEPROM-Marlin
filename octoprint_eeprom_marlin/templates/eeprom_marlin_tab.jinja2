@@ -1,3 +1,4 @@
+{% autoescape true %}
 <!-- ko if: loginState.hasPermission(access.permissions.PLUGIN_EEPROM_MARLIN_READ) -->
 <div class="row-fluid eeprom-nav">
     <div class="span3">
@@ -64,3 +65,4 @@
     <p>{{ _("You need to ask the administrator of this instance to enable it for you.")}}</p>
 </div>
 <!-- /ko -->
+{% endautoescape %}
