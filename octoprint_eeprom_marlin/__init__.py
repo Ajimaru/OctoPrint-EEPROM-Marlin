@@ -107,6 +107,12 @@ class EEPROMMarlinPlugin(
             "CONTRIBUTORS": contributors.export_contributors(),
         }
 
+    def is_template_autoescaped(self):
+        # Without this OctoPrint wraps the templates in "autoesc false" and logs a warning on
+        # every start; OctoPrint 2.1 enforces autoescaping anyway. The templates output only
+        # _() strings, macros and plain-text labels/names from data.py and contributors.py.
+        return True
+
     # Settings handling - see settings submodule
     def get_settings_defaults(self):
         return settings.defaults
