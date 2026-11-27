@@ -281,25 +281,25 @@ class EEPROMMarlinPlugin(
             "eeprom_marlin": {
                 "displayName": "Marlin EEPROM Editor (Totti)",
                 "displayVersion": self._plugin_version,
-                # version check: github repository
+                # version check: this fork's releases, not the upstream repository
                 "type": "github_release",
-                "user": "ttotty",
+                "user": "Ajimaru",
                 "repo": "OctoPrint-EEPROM-Marlin",
                 "current": self._plugin_version,
                 "stable_branch": {
                     "name": "Stable",
                     "branch": "master",
-                    "comittish": ["master"],
+                    "commitish": ["master"],
                 },
                 "prerelease_branches": [
                     {
                         "name": "Release Candidate",
                         "branch": "pre-release",
-                        "comittish": ["pre-release", "master"],
+                        "commitish": ["pre-release", "master"],
                     }
                 ],
                 # update method: pip
-                "pip": "https://github.com/ttotty/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip",
+                "pip": "https://github.com/Ajimaru/OctoPrint-EEPROM-Marlin/archive/{target_version}.zip",
             }
         }
 
