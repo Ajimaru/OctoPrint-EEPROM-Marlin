@@ -21,16 +21,16 @@ plugin_cmdclass = versioneer.get_cmdclass()
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
-plugin_description = """Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint. Plugin previously maintained by Anderson Silva, currently Charlie Powell"""
+plugin_description = """Makes it possible to change the EEPROM values of Marlin Firmware through OctoPrint. Previously maintained by Anderson Silva, Charlie Powell and Totti."""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "Totti. forked from Charlie Powell, previously Anderson Silva"
+plugin_author = "Ajimaru, based on work of Totti, Charlie Powell and Anderson Silva"
 
 # The plugin's author's mail address.
-plugin_author_email = "@gmail.com"
+plugin_author_email = "ajimaru_gdr@pm.me"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/ttotty/OctoPrint-EEPROM-Marlin"
+plugin_url = "https://github.com/Ajimaru/OctoPrint-EEPROM-Marlin"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
