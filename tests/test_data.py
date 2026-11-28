@@ -5,7 +5,7 @@ Tests for the data processing and storage part of the plugin
 import unittest
 from unittest import mock
 
-from octoprint_eeprom_marlin import data, parser
+from octoprint_eeprom_marlin import data, parser, util
 
 
 class DataTestCase(unittest.TestCase):
@@ -48,6 +48,9 @@ class DataTestCase(unittest.TestCase):
         expected = {
             "command": "M593",
             "params": {
+                # Unswitched params stay present as None, the UI hides them by value
+                "F": None,
+                "D": None,
                 # Each switch (X and Y) gets its own parameter dict
                 "X": {"F": 57.0, "D": 0.25},
                 "Y": {"F": 38.5, "D": 0.15},
@@ -216,3 +219,57 @@ class DataTestCase(unittest.TestCase):
 
         self.assertEqual(result["steps"], expected["steps"])
         self.assertEqual(result["tmc_current"], expected["tmc_current"])
+
+    def test_unswitched_and_switched_lines_kept_together(self):
+        # Axis values come on one line, per-extruder values on indexed lines
+        plugin = mock.Mock()
+        eeprom_parser = parser.Parser(plugin)
+        eeprom_data = data.EEPROMData(plugin)
+
+        for line in [
+            "echo:  M92 X80.00 Y80.00 Z400.00",
+            "echo:  M92 T0 E93.00",
+            "echo:  M92 T1 E95.00",
+        ]:
+            eeprom_data.from_parser(eeprom_parser.parse_eeprom_data(line))
+
+        self.assertEqual(
+            eeprom_data.to_dict()["steps"]["params"],
+            {
+                "X": 80.0,
+                "Y": 80.0,
+                "Z": 400.0,
+                "E": None,
+                "T0": {"X": None, "Y": None, "Z": None, "E": 93.0},
+                "T1": {"X": None, "Y": None, "Z": None, "E": 95.0},
+            },
+        )
+
+    def test_unindexed_switch_key_normalised(self):
+        # Unindexed switches are keyed by letter even when the input carries an index
+        plugin = mock.Mock()
+        eeprom_data = data.EEPROMData(plugin)
+
+        eeprom_data.from_dict(
+            {"name": "input_shaping", "params": {"X1": {"F": 40.0, "D": 0.1}}}
+        )
+
+        self.assertEqual(
+            eeprom_data.to_dict()["input_shaping"]["params"],
+            {"F": None, "D": None, "X": {"F": 40.0, "D": 0.1}},
+        )
+
+    def test_input_shaping_commands(self):
+        plugin = mock.Mock()
+        eeprom_parser = parser.Parser(plugin)
+        eeprom_data = data.EEPROMData(plugin)
+
+        for line in ["echo:  M593 X F57.00 D0.25", "echo:  M593 Y F38.50 D0.15"]:
+            eeprom_data.from_parser(eeprom_parser.parse_eeprom_data(line))
+
+        self.assertEqual(
+            util.construct_command(
+                eeprom_data.to_dict()["input_shaping"], "input_shaping"
+            ),
+            ["M593 X F57.0 D0.25", "M593 Y F38.5 D0.15"],
+        )
