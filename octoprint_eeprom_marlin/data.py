@@ -418,6 +418,9 @@ class MultipleData:
         self.name = name
         self.command = command
         self.switches = switches
+        self.switches_not_indexed = ALL_DATA_STRUCTURE[name].get(
+            "switchesNotIndexed", False
+        )
         self.data = {}
         for param, content in ALL_DATA_STRUCTURE[name]["params"].items():
             self.data[param] = content
@@ -431,6 +434,11 @@ class MultipleData:
         if switch[0] not in self.switches:
             raise ValueError("unknown switch")
 
+        # Switches without an index are keyed by their letter alone, whatever
+        # the source (parser, UI or an older backup) passed in.
+        if self.switches_not_indexed:
+            switch = switch[0]
+
         # If this particular switch not seen, create data class for it
         if switch not in self.data or not isinstance(self.data[switch], IndividualData):
             self.data[switch] = IndividualData(
@@ -442,34 +450,17 @@ class MultipleData:
         # set the params for this switch
         self.data[switch].params_from_dict(data)
 
-        # --- IMPORTANT: remove/clear any previously stored "no-switch" (generic) values ---
-        # Generic params are stored as dicts with a "value" key (from __init__).
-        # Clear those so the UI only sees the per-switch values.
-        for k, v in list(self.data.items()):
-            if not isinstance(v, IndividualData):
-                # clear generic value if present
-                if isinstance(v, dict) and "value" in v:
-                    v["value"] = None
-
-
     def set_data_no_switch(self, data):
         if not data:
             return
 
-        # If we already have any switch-specific IndividualData entries, prefer them
-        # and do not set generic (no-switch) values — prevents duplication.
-        if any(isinstance(v, IndividualData) for v in self.data.values()):
-            # optional debug
-            # self.plugin._logger.debug("Skipping no-switch data because switch-specific data exists for %s", self.name)
-            return
-
-        # No per-switch data yet, so store the generic values
+        # Unswitched values belong to other axes or steppers than the switched
+        # ones, so both are kept side by side.
         for key, value in data.items():
             if value is not None:
                 if key not in self.data:
                     self.data[key] = {}
                 self.data[key]["value"] = value
-
 
     def is_switch_valid(self, switch):
         return switch[0] in self.switches
